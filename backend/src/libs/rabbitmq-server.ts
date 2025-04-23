@@ -11,12 +11,12 @@ export default class RabbitmqServer {
   constructor(private uri: string) {}
 
   async start(): Promise<void> {
-    // Força o tipo de retorno de connect como Connection
-    this.conn = (await connect(this.uri)) as Connection;
+    // Converte explicitamente para 'unknown' antes de forçar para 'Connection'
+    this.conn = (await connect(this.uri)) as unknown as Connection;
     if (!this.conn) throw new Error("Failed to establish connection");
 
-    // Força o tipo de retorno de createChannel como Channel
-    this.channel = (await this.conn.createChannel()) as Channel;
+    // Converte explicitamente para 'unknown' antes de forçar para 'Channel'
+    this.channel = (await (this.conn as any).createChannel()) as unknown as Channel;
     if (!this.channel) throw new Error("Failed to create channel");
 
     await this.channel.assertQueue("waba360", { durable: true });
