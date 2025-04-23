@@ -6,7 +6,7 @@ RUN npm install -g @quasar/cli
 
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY ./frontend/ .
 
 RUN quasar build -m pwa
