@@ -2,6 +2,18 @@
 FROM node:16 as buildenv
 WORKDIR /app
 
+# 🛠 Instalação de dependências essenciais
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    libvips-dev
+    
 RUN npm install -g @quasar/cli
 
 COPY ./frontend/package*.json .
