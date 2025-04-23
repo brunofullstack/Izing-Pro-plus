@@ -2,11 +2,16 @@ const axios = require('axios');
 
 async function autenticar(req, res) {
   const { username, password } = req.body;
+
   try {
-      // Retorna a resposta da autenticação para o cliente
+    const response = await axios.post('https://sua-api.com/auth', {
+      username,
+      password
+    });
+
     res.json(response.data);
   } catch (error) {
-    // Tratar erros de autenticação
+    console.error(error); // Ajuda a debugar
     res.status(500).json({ error: 'Erro na autenticação' });
   }
 }
