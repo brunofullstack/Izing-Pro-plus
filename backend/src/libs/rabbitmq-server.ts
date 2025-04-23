@@ -11,12 +11,14 @@ export default class RabbitmqServer {
   constructor(private uri: string) {}
 
   async start(): Promise<void> {
-    this.conn = await connect(this.uri);
+    // Força o tipo de retorno de connect como Connection
+    this.conn = (await connect(this.uri)) as Connection;
     if (!this.conn) throw new Error("Failed to establish connection");
-  
-    this.channel = await this.conn.createChannel();
+
+    // Força o tipo de retorno de createChannel como Channel
+    this.channel = (await this.conn.createChannel()) as Channel;
     if (!this.channel) throw new Error("Failed to create channel");
-  
+
     await this.channel.assertQueue("waba360", { durable: true });
     await this.channel.assertQueue("messenger", { durable: true });
   }
