@@ -15,7 +15,7 @@
   "author": "lumardyelson@gmail.com",
   "license": "@izing.io",
   "dependencies": {
-    "css-loader": "^6.11.0",
+    "css-loader": "^6.8.1",
     "mini-css-extract-plugin": "^2.9.2"
   },
   "devDependencies": {
