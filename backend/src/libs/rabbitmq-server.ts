@@ -4,12 +4,11 @@ import { logger } from "../utils/logger";
 import { sleepRandomTime } from "../utils/sleepRandomTime";
 
 export default class RabbitmqServer {
-  private conn: Connection;
+  private conn: Connection | null = null;
 
-  private channel: Channel;
+  private channel: Channel | null = null;
 
-  // eslint-disable-next-line prettier/prettier
-  constructor(private uri: string) { }
+  constructor(private uri: string) {}
 
   async start(): Promise<void> {
     this.conn = await connect(this.uri);
@@ -18,17 +17,18 @@ export default class RabbitmqServer {
     await this.channel.assertQueue("messenger", { durable: true });
   }
 
-  // async createExchange(name: string): Promise<void> {
-  //   // const ex = this.channel.assertExchange(name, type, { durable: true });
-  //   // console.log("Ex", ex);
-  //   // await this.channel.bindQueue(name, name, name);
-  // }
+  private ensureChannel(): Channel {
+    if (!this.channel) {
+      throw new Error("Channel is not initialized. Did you forget to call start()?");
+    }
+    return this.channel;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async publishInQueue(queue: string, message: string) {
-    await this.channel.assertQueue(queue, { durable: true });
-    return this.channel.sendToQueue(queue, Buffer.from(message), {
-      persistent: true
+  async publishInQueue(queue: string, message: string): Promise<boolean> {
+    const channel = this.ensureChannel();
+    await channel.assertQueue(queue, { durable: true });
+    return channel.sendToQueue(queue, Buffer.from(message), {
+      persistent: true,
     });
   }
 
@@ -37,46 +37,50 @@ export default class RabbitmqServer {
     routingKey: string,
     message: string
   ): Promise<boolean> {
-    return this.channel.publish(exchange, routingKey, Buffer.from(message), {
-      persistent: true
+    const channel = this.ensureChannel();
+    return channel.publish(exchange, routingKey, Buffer.from(message), {
+      persistent: true,
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async consumeWhatsapp(
     queue: string,
     callback: (message: Message) => Promise<void>
-  ) {
-    this.channel.prefetch(10, false);
-    await this.channel.assertQueue(queue, { durable: true });
-    this.channel.consume(queue, async (message: any) => {
+  ): Promise<void> {
+    const channel = this.ensureChannel();
+    channel.prefetch(10, false);
+    await channel.assertQueue(queue, { durable: true });
+    channel.consume(queue, async (message: Message | null) => {
+      if (!message) {
+        logger.warn("Received null message");
+        return;
+      }
       try {
         await callback(message);
-        // delay para processamento da mensagem
         await sleepRandomTime({
           minMilliseconds: Number(process.env.MIN_SLEEP_INTERVAL || 500),
-          maxMilliseconds: Number(process.env.MAX_SLEEP_INTERVAL || 2000)
+          maxMilliseconds: Number(process.env.MAX_SLEEP_INTERVAL || 2000),
         });
-        this.channel.ack(message);
-        return;
+        channel.ack(message);
       } catch (error) {
-        this.channel.nack(message);
+        channel.nack(message);
         logger.error("consumeWhatsapp", error);
-        // this.channel.close();
       }
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async consume(queue: string, callback: (message: Message) => void) {
-    return this.channel.consume(queue, (message: any) => {
+  async consume(queue: string, callback: (message: Message) => void): Promise<void> {
+    const channel = this.ensureChannel();
+    channel.consume(queue, (message: Message | null) => {
+      if (!message) {
+        logger.warn("Received null message");
+        return;
+      }
       try {
         callback(message);
-        this.channel.ack(message);
-        return;
+        channel.ack(message);
       } catch (error) {
-        logger.error(error);
-        // this.channel.close();
+        logger.error("Error in consume callback", error);
       }
     });
   }
