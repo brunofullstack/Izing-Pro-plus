@@ -26,19 +26,14 @@ const AuthUserService = async ({
     where: { email },
     include: [{ model: Queue, as: "queues" }]
   });
-  // attributes: [
-  //   "id",
-  //   "email",
-  //   "name",
-  //   "lastLogin",
-  //   "profile",
-  //   "tenantId",
-  //   "configs",
-  //   "isOnline"
-  // ]
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
   const token = createAccessToken(user);
   const refreshToken = createRefreshToken(user);
+
   await user.update({
     isOnline: true,
     status: "online",
@@ -49,7 +44,6 @@ const AuthUserService = async ({
   const usuariosOnline = await User.findAll({
     where: { tenantId: user.tenantId, isOnline: true },
     attributes: ["id", "email", "status", "lastOnline", "name", "lastLogin"]
-    // include: [{ model: Queue, as: "queues" }]
   });
 
   return {
