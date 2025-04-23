@@ -25,8 +25,12 @@ RUN npm install --legacy-peer-deps --verbose
 # Copiar o restante dos arquivos
 COPY ./frontend/ .
 
-# Rodar o build com verbose para capturar detalhes
-RUN quasar build -m pwa --verbose
+# Verificar se os arquivos estão presentes
+RUN echo "Verificando arquivos do frontend"
+RUN ls -alh /app
+
+# Rodar o build com verbose
+RUN quasar build -m pwa --verbose || (echo "Build failed" && exit 1)
 
 # Stage 2: Produção
 FROM nginx:stable as production-stage
