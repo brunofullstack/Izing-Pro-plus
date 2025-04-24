@@ -7,30 +7,26 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev libpango1.0-dev \
     libjpeg-dev libgif-dev librsvg2-dev libvips-dev
 
-# Instalar Quasar CLI (versão compatível)
-RUN npm install -g @quasar/cli@1.3.2
+# Instalar Quasar CLI
+RUN npm install -g @quasar/cli@latest
 
-# Copiar arquivos de configuração
+# Copiar e instalar dependências
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
 
-# Instalar dependências com versões específicas
-RUN npm install \
-    @svgdotjs/svg.js@3.1.2 \
-    @svgdotjs/svg.select.js@3.0.2 \
-    vue-apexcharts@3.6.2 \
-    css-loader@5.2.7 \
-    --legacy-peer-deps --force
+# Resolver dependências problemáticas
+RUN npm install @svgdotjs/svg.js@latest @svgdotjs/svg.select.js@latest
+RUN npm install vue-apexcharts@latest
 
 # Instalar outras dependências
 RUN npm cache clean --force
 RUN npm install --legacy-peer-deps --force --verbose
 
-# Copiar código fonte
+# Copiar resto do código
 COPY ./frontend/ .
 
-# Build do Quasar
-RUN quasar build -m pwa --verbose
+# Build com log detalhado
+RUN quasar build -m pwa --verbose > /tmp/build.log 2>&1 || (cat /tmp/build.log && exit 1)
 
 # Stage de produção
 FROM nginx:stable as production-stage
