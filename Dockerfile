@@ -20,7 +20,7 @@ RUN npm install -g @quasar/cli
 # Copiar os arquivos do frontend
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
-RUN npm install --legacy-peer-deps --verbose
+RUN npm install --legacy-peer-deps --force --verbose
 
 # Copiar o restante dos arquivos
 COPY ./frontend/ .

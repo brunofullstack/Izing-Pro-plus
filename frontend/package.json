@@ -28,7 +28,7 @@
     "v-emoji-picker": "^2.3.3",
     "vdata-parser": "^0.1.5",
     "vue": "^2.7.14",
-    "vue-apexcharts": "^1.6.2",
+    "vue-apexcharts": "^2.1.0",
     "vue-codemirror": "^4.0.6",
     "vue-easy-lightbox": "^0.14.0",
     "vue-facebook-login-component": "^4.0.2",

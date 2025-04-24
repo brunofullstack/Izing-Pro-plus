@@ -15,6 +15,7 @@
   "author": "lumardyelson@gmail.com",
   "license": "@izing.io",
   "dependencies": {
+    "@svgdotjs/svg.select.js": "^4.0.2",
     "css-loader": "^6.8.1",
     "mini-css-extract-plugin": "^2.9.2"
   },
