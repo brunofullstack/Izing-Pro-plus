@@ -12,8 +12,10 @@
   "dependencies": {
     "@quasar/cli": "^2.2.1",
     "@quasar/extras": "^1.16.3",
-    "@svgdotjs/svg.select.js": "^4.0.2",
-    "apexcharts": "^4.0.0",
+    "@svgdotjs/svg.js": "3.1.2",
+    "@svgdotjs/svg.select.js": "3.0.2",
+    "vue-apexcharts": "3.6.2",
+    "css-loader": "5.2.7",
     "axios": "^1.4.0",
     "core-js": "^3.30.2",
     "date-fns": "^2.30.0",
@@ -29,7 +31,6 @@
     "v-emoji-picker": "^2.3.3",
     "vdata-parser": "^0.1.5",
     "vue": "^2.7.14",
-    "vue-apexcharts": "^1.7.0",
     "vue-codemirror": "^4.0.6",
     "vue-easy-lightbox": "^0.14.0",
     "vue-facebook-login-component": "^4.0.2",
@@ -56,6 +57,12 @@
     "quasar-app-extension-qdatetimepicker": "^1.0.0-rc.18",
     "webpack": "4.46.0",
     "workbox-webpack-plugin": "^6.6.0"
+  },
+  "resolutions": {
+    "@svgdotjs/svg.select.js": "3.0.2",
+    "@svgdotjs/svg.js": "3.1.2",
+    "webpack": "4.46.0",
+    "css-loader": "5.2.7"
   },
   "browserslist": [
     "last 10 Chrome versions",
