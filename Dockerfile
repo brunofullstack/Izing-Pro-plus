@@ -30,7 +30,7 @@ RUN echo "Verificando arquivos do frontend"
 RUN ls -alh /app
 
 # Rodar o build com verbose
-RUN quasar build -m pwa --verbose || (echo "Build failed" && exit 1)
+RUN quasar build -m pwa --verbose > /tmp/build.log 2>&1 || (cat /tmp/build.log && echo "Build failed" && exit 1)
 
 # Stage 2: Produção
 FROM nginx:stable as production-stage
