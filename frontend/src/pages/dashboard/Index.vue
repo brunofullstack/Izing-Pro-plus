@@ -276,7 +276,7 @@ import {
   GetDashTicketsPerUsersDetail
 } from 'src/service/estatisticas'
 import { subDays, format, formatDuration, differenceInDays } from 'date-fns'
-// import ApexChart from 'vue-apexcharts'
+import ApexChart from 'vue-apexcharts'
 import { QIcon } from 'quasar'
 
 export default {
