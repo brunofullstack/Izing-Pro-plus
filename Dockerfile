@@ -10,17 +10,17 @@ RUN apt-get update && apt-get install -y \
 # Instalar Quasar CLI
 RUN npm install -g @quasar/cli@latest
 
-# Copiar e instalar dependências
+# Copiar arquivos de configuração e dependências
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
 
-# Resolver dependências problemáticas
-RUN npm install @svgdotjs/svg.js@latest @svgdotjs/svg.select.js@latest
-RUN npm install vue-apexcharts@latest
+# Instalar dependências com flags para resolver conflitos
+RUN npm install --legacy-peer-deps --force
+RUN npm install @svgdotjs/svg.js@latest @svgdotjs/svg.select.js@latest --legacy-peer-deps
+RUN npm install vue-apexcharts@latest --legacy-peer-deps
 
-# Instalar outras dependências
+# Limpar cache (opcional, pode ajudar em alguns casos)
 RUN npm cache clean --force
-RUN npm install --legacy-peer-deps --force --verbose
 
 # Copiar resto do código
 COPY ./frontend/ .
