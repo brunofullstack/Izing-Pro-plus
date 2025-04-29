@@ -1,5 +1,5 @@
 # develop stage
-FROM node:16 as buildenv  # Changed from node:14 to node:16 (or higher)
+FROM node:16 as buildenv
 WORKDIR /app
 
 RUN npm install -g @quasar/cli
