@@ -1,5 +1,5 @@
 # develop stage
-FROM node:14 as buildenv
+FROM node:16 as buildenv  # Changed from node:14 to node:16 (or higher)
 WORKDIR /app
 
 RUN npm install -g @quasar/cli
@@ -11,6 +11,7 @@ COPY ./frontend/ .
 
 RUN quasar build -m pwa
 
+# production stage
 FROM nginx:stable as production-stage
 RUN mkdir /app
 COPY --from=buildenv /app/dist/pwa /usr/share/nginx/html
