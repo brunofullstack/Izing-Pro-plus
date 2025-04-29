@@ -1,38 +1,42 @@
 FROM node:16 as buildenv
 WORKDIR /app
 
-# System dependencies
+# 1. Install system dependencies
 RUN apt-get update && apt-get install -y \
     python3 make g++ \
     libcairo2-dev libpango1.0-dev \
-    libjpeg-dev libgif-dev librsvg2-dev libvips-dev
+    libjpeg-dev libgif-dev librsvg2-dev
 
-# Install Quasar CLI
+# 2. Install Quasar CLI
 RUN npm install -g @quasar/cli@latest
 
-# Copy package files first for better caching
+# 3. Copy package files
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
 
-# First install all regular dependencies
+# 4. Install core dependencies first
 RUN npm install --legacy-peer-deps
 
-# Then install the SVG-related packages using the LATEST versions
+# 5. Resolve SVG.js compatibility
 RUN npm install --legacy-peer-deps \
-    @svgdotjs/svg.js \
-    @svgdotjs/svg.select.js \
-    vue-apexcharts
+    @svgdotjs/svg.js@3.0.16 \
+    @svgdotjs/svg.select.js@3.0.1 \
+    vue-apexcharts@1.6.1
 
-# Verify installed versions (for debugging)
-RUN npm list @svgdotjs/svg.js @svgdotjs/svg.select.js vue-apexcharts
+# 6. Force-resolve Webpack dependencies
+RUN npm install --legacy-peer-deps \
+    webpack@4.46.0 \
+    css-loader@5.2.7 \
+    vue-loader@15.9.8
 
-# Clean cache
+# 7. Clean cache and verify
 RUN npm cache clean --force
+RUN npm list @svgdotjs/svg.js @svgdotjs/svg.select.js vue-apexcharts webpack css-loader
 
-# Copy the rest of the application
+# 8. Copy application code
 COPY ./frontend/ .
 
-# Build with detailed logging
+# 9. Build with detailed logging
 RUN quasar build -m pwa --verbose > /tmp/build.log 2>&1 || (cat /tmp/build.log && exit 1)
 
 # Production stage
