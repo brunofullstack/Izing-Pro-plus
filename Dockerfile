@@ -14,10 +14,11 @@ RUN npm install -g @quasar/cli@latest
 COPY ./frontend/package*.json .
 COPY ./frontend/quasar.conf.js .
 
-# Install dependencies with specific versions to avoid conflicts
-RUN npm install --legacy-peer-deps
-RUN npm install @svgdotjs/svg.js@3.0.16 @svgdotjs/svg.select.js@3.0.1 --legacy-peer-deps
-RUN npm install vue-apexcharts@1.6.2 --legacy-peer-deps
+# Install all dependencies at once with legacy-peer-deps
+RUN npm install --legacy-peer-deps \
+    @svgdotjs/svg.js@3.1.2 \
+    @svgdotjs/svg.select.js@3.0.3 \
+    vue-apexcharts@1.6.2
 
 # Clean cache
 RUN npm cache clean --force
