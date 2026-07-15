@@ -55,13 +55,13 @@ export const initIO = (httpServer: Server): SocketIO => {
           ]
         });
         socket.handshake.auth.user = user;
-        next();
+        return next();
       }
-      next(new Error("authentication error"));
+      return next(new Error("authentication error"));
     } catch (error) {
       logger.warn(`tokenInvalid: ${socket}`);
       socket.emit(`tokenInvalid:${socket.id}`);
-      next(new Error("authentication error"));
+      return next(new Error("authentication error"));
     }
   });
 

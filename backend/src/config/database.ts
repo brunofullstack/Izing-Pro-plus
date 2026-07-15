@@ -15,7 +15,7 @@ module.exports = {
   dialect: process.env.DB_DIALECT || "postgres",
   timezone:  process.env.DB_TIMEZONE || "-03:00",
   host: process.env.POSTGRES_HOST || "localhost",
-  port: process.env.DB_PORT || "5432",
+  port: process.env.DB_PORT || "5435",
   database: process.env.POSTGRES_DB || "wchats",
   username: process.env.POSTGRES_USER || "postgres",
   password: process.env.POSTGRES_PASSWORD || "marina@0509",

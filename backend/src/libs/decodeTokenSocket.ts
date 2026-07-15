@@ -30,6 +30,9 @@ const decode = (token: string): Result => {
       tenantId: 0
     }
   };
+  if (!token) {
+    return validation;
+  }
   try {
     const decoded = verify(token, authConfig.secret);
     const { id, profile, tenantId } = decoded as TokenPayload;

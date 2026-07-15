@@ -3,6 +3,7 @@
 Um sistema para gestão de atendimento multicanais centralizado.
 
 Sistema possui o backend e canais baseado em:
+
 - Whatsapp [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js)
 - Telegram [telegraf](github.com/telegraf/telegraf)
 - Instagram [instagram-private-api](https://github.com/dilame/instagram-private-api)
@@ -14,17 +15,21 @@ No front, todas as funcionalidades são baseadas no [vue](https://vuejs.org/) e 
 
 Esse projeto tem inspiração e também é baseado no projeto fantástico [whaticket](https://github.com/canove/whaticket-community).
 
-
 **IMPORTANTE**: não garantimos que a utilização desta ferramenta não irá gerar bloqueio nas contas utilizadas. São bots que em sua maioria utilizam APIs segundarias para comunicação com os fornecedores dos serviços. Use com responsabilidade!
 
-
 ## Screenshots
->![Doação](screenshots/Bot.gif) 
-___  
->![Doação](screenshots/dashboard.gif)
-___
->![Doação](screenshots/izing.gif)
-___
+
+> ![Doação](screenshots/Bot.gif)
+
+---
+
+> ![Doação](screenshots/dashboard.gif)
+
+---
+
+> ![Doação](screenshots/izing.gif)
+
+---
 
 ## Principais funcionalidades
 
@@ -36,23 +41,60 @@ ___
 - Enviar e receber mídias diversas (imagens/áudio/documentos) ✅
 - Multiempresas (abordagem de base compartilhada)
 
+## Docker Compose & Makefile (Recomendado)
 
-## Docker compose Localhost
+A forma mais simples e rápida de rodar toda a aplicação localmente é utilizando o **Docker** junto com os atalhos do **Makefile**.
 
-Execute comando na pasta raiz do projeto (izing.io)
-```
-docker compose -f "docker-compose.yml" up -d --build
-```
-Após os containers estarem rodando, faça a carga de dados iniciais (apenas na primeira vez)
-```
-docker compose exec -it izing-backend  bash -c 'npx sequelize db:seed:all'    
-```
-> Se tudo correu bem, acesse o sistema e faça login no link: [http://localhost:8080/#/login](http://localhost:8080/#/login).
-```
-usuário: admin@izing.io
-senha: 123456
+### 1. Copiar as variáveis de ambiente
+
+Crie o arquivo `.env` a partir do modelo na pasta backend (edite os valores caso necessário):
+
+```bash
+cp backend/.env.example backend/.env
 ```
 
+### 2. Inicializar a aplicação
+
+Execute o atalho para compilar as imagens e subir os contêineres em segundo plano:
+
+```bash
+make up
+```
+
+### 3. Rodar as migrações e carga inicial (seeds)
+
+Na primeira execução da aplicação, faça a carga inicial de dados no banco de dados:
+
+```bash
+make seed
+```
+
+---
+
+## Docker Compose (Alternativa sem Makefile)
+
+Caso não tenha o utilitário `make` instalado em sua máquina, você pode executar os comandos nativos do Docker Compose:
+
+1. **Subir os contêineres**:
+   ```bash
+   docker compose -f "docker-compose.yml" up -d --build
+   ```
+2. **Rodar a carga inicial de dados**:
+   ```bash
+   docker compose exec -it izing-backend bash -c 'npx sequelize db:seed:all'
+   ```
+
+---
+
+## Acesso ao Sistema
+
+Após os serviços estarem ativos, acesse o sistema no seu navegador:
+
+- **Link**: [http://localhost:8080/#/login](http://localhost:8080/#/login)
+- **Usuário padrão**: `admin@izing.io`
+- **Senha padrão**: `123456`
+
+---
 
 ## Instalação (Linux Ubuntu - Desenvolvimento)
 
@@ -62,7 +104,7 @@ Instale o rabbitmq;
 Instale o redis;
 Instale node 14.* via nvm
 ```
- 
+
 Install puppeteer dependencies:
 
 ```bash
@@ -138,24 +180,24 @@ Instale as dependências do backend e execute as migrações e carga de dados in
 npm install
 ```
 
-
 Crie o arquivo .env na pasta frontend:
 
 ```bash
 cp .env.example .env
 nano .env
 ```
+
 ```bash
 URL_API='http://api.mydomain.com' # URL do backend
 FACEBOOK_APP_ID='1554345554575413' # id do app criado na console do facebook
 ```
 
-
 Inicie o frontend (suponto que já possua instalado as cli do vue e quasar):
+
 ```bash
 quasar c && quasar d
 ```
-  
+
 ## Guia básico para produção (Ubuntu >= 18.04 VPS)
 
 ```
@@ -163,7 +205,6 @@ Instale o postgres;
 Instale o rabbitmq;
 Instale o redis;
 ```
- 
 
 As instruções assumem que não está executando como root. Vamos iniciar criando um usuário e as permissões necessárias.
 
@@ -190,6 +231,7 @@ sudo apt update && sudo apt upgrade
 ```
 
 Instale o node:
+
 ```bash
 curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -198,7 +240,6 @@ npm -v
 ```
 
 > `Assumiremos que você já possui o Postgres instalado e o banco criado.`
-
 
 Clone o repositório:
 
@@ -222,7 +263,7 @@ PROXY_PORT=443 #USE NGINX REVERSE PROXY PORT HERE, WE WILL CONFIGURE IT LATTER
 PORT=8080
 
 DB_DIALECT=postgres
-DB_PORT=5432
+DB_PORT=5435
 POSTGRES_HOST=
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=
@@ -263,7 +304,6 @@ npx sequelize db:migrate
 npx sequelize db:seed:all
 ```
 
-
 Instale o pm2 **com sudo**, e inicie o backend com ele:
 
 ```bash
@@ -284,6 +324,7 @@ sudo env PATH=\$PATH:/usr/bin pm2 startup ubuntu -u YOUR_USERNAME --hp /home/YOU
 ```
 
 Agora vamos preparar o frontend.
+
 ```bash
 cd ../frontend
 npm install
@@ -295,18 +336,21 @@ Crie o arquivo .env na pasta frontend:
 cp .env.example .env
 nano .env
 ```
+
 ```bash
 URL_API='http://api.mydomain.com' # URL do backend
 FACEBOOK_APP_ID='1554345554575413' # id do app criado na console do facebook
 ```
 
 Faça o build do front:
+
 ```bash
 quasar build -P -m pwa
 ```
 
-___
-___
+---
+
+---
 
 Instale o nginx:
 
@@ -321,6 +365,7 @@ sudo rm /etc/nginx/sites-enabled/default
 ```
 
 Crie o site para o Backend
+
 ```bash
 sudo nano /etc/nginx/sites-available/izing-backend
 ```
@@ -337,6 +382,7 @@ server {
 ```
 
 Crie o site para o Front
+
 ```bash
 sudo nano /etc/nginx/sites-available/izing-frontend
 ```
@@ -344,13 +390,13 @@ sudo nano /etc/nginx/sites-available/izing-frontend
 ```bash
 server {
   server_name myapp.mydomain.com;
-  
+
   root /home/user/izing/frontend/dist/pwa; # caminho da pasta dist/pwa
-  
+
   add_header X-Frame-Options "SAMEORIGIN";
   add_header X-XSS-Protection "1; mode=block";
-  add_header X-Content-Type-Options "nosniff"; 
-  
+  add_header X-Content-Type-Options "nosniff";
+
   index index.html;
   charset utf-8;
   location / {
@@ -446,11 +492,12 @@ A utilização desta ferramenta é feita por sua conta e risco. O código é abe
 
 Este projeto não é afiliado, associado, autorizado, endossado por, ou de qualquer forma oficialmente ligado à WhatsApp, ou a qualquer uma das suas filiais ou afiliadas. O website oficial da WhatsApp pode ser encontrado em https://whatsapp.com. "WhatsApp", bem como nomes, marcas, emblemas e imagens relacionadas são marcas registadas dos seus respectivos proprietários.
 
+---
 
+### Curtiu? Pague-me um café!! Segue QR code (PIX)
 
---------------------------
-### Curtiu? Pague-me um café!! Segue QR code (PIX)  
 [<img src="donate.jpeg" height="150" width="200"/>](donate.jpeg)
+
 # izing
 
 # izing

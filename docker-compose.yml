@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   
   fixPermissionsPostregres:
@@ -18,7 +16,7 @@ services:
     volumes:
       - "$HOME/www/izing/database/pg:/var/lib/postgresql"
     ports:
-      - "5432:5432"
+      - "5435:5432"
     networks:
       - db_network
     depends_on:
@@ -70,7 +68,7 @@ services:
     tty: true
     ports:
       - 3100:3100
-      - 3000:3000
+      - 3010:3000
     # command: /start_production
     extra_hosts:
       - "host.docker.internal:host-gateway"

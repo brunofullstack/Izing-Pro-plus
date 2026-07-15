@@ -56,7 +56,7 @@ services:
     volumes:
       - "/var/izing/pg:/bitnami/postgresql/data"
     ports:
-      - "5432:5432"
+      - "5435:5432"
     depends_on:
       - izing-fixPermissionsPostregres
     networks:
